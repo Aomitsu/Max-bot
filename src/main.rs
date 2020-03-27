@@ -21,6 +21,7 @@ use serenity::model::id::UserId;
 use serenity::model::prelude::{Activity, OnlineStatus};
 
 use commands::{
+    fun::*,
     owner::*,
     utils::*,
 };
@@ -55,10 +56,19 @@ impl EventHandler for Handler {
 struct Utils;
 
 #[group]
-#[commands(quit, admsay)]
+#[commands(vanish, harck, clyde, trumptweet, phcom)]
+struct Fun;
+
+#[group]
+#[commands(quit, admsay, setstatus)]
 struct Owner;
 
+
 #[help]
+#[command_not_found_text("Commande introuvable !")]
+#[individual_command_tip("**Menu d'aide**\n\n\nCe menu d'aide vous permet de voir toute les commandes de notre bot ! Plus de détail : `help <commande/catégorie>`")]
+#[strikethrough_commands_tip_in_guild("Certaines commandes sont barrées, c'est que vous n'avez pas la permission, ou qu'elle se fait dans un serveur !")]
+#[strikethrough_commands_tip_in_dm("Certaines commandes sont barrées, c'est que vous n'avez pas la permission, ou qu'elle se fait en messages privés !")]
 fn my_help(
     context: &mut Context,
     msg: &Message,
@@ -109,6 +119,7 @@ fn main() {
             _ => error!("{} failed: {:?}", message.content, error),
         })
         .group(&UTILS_GROUP)
+        .group(&FUN_GROUP)
         .group(&OWNER_GROUP));
 
 
