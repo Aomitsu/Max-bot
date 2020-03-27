@@ -15,7 +15,7 @@ use serenity::{
     prelude::*,
 };
 use serenity::framework::standard::{Args, CommandGroup, CommandResult, help_commands, HelpOptions};
-use serenity::framework::standard::DispatchError::Ratelimited;
+use serenity::framework::standard::DispatchError::{NotEnoughArguments, Ratelimited, TooManyArguments};
 use serenity::model::channel::Message;
 use serenity::model::id::UserId;
 use serenity::model::prelude::{Activity, OnlineStatus};
@@ -52,15 +52,18 @@ impl EventHandler for Handler {
 }
 
 #[group]
-#[commands(ping, say)]
+#[commands(ping, say, links)]
+#[description = "Commandes utiles."]
 struct Utils;
 
 #[group]
-#[commands(vanish, harck, clyde, trumptweet, phcom)]
+#[commands(vanish, harck, clyde, trumptweet, phcom, captcha)]
+#[description = "Commandes souvent amusantes."]
 struct Fun;
 
 #[group]
 #[commands(quit, admsay, setstatus)]
+#[description = "**Réservé au créateur du bot.**"]
 struct Owner;
 
 
@@ -115,7 +118,27 @@ fn main() {
                     &context,
                     format!("Ratelimited: Try again in {} seconds.", e),
                 );
+            },
+
+            NotEnoughArguments {
+                min, given
+            } => {
+                error!("{} failed: {:?}", message.content, error);
+                let _ = message.channel_id.say(
+                    &context,
+                    format!("> **Erreur**: Vous avez donné seulement *{}* arguments, il en faut minimum *{}*.\n> Un doute ? Utilisez la commande `help`", given, min),
+                );
             }
+            TooManyArguments {
+                max, given,
+            } => {
+                error!("{} failed: {:?}", message.content, error);
+                let _ = message.channel_id.say(
+                    &context,
+                    format!("> **Erreur**: Vous avez donné *{}* arguments, la limite est de *{}*.\n> Un doute ? Utilisez la commande `help`", given, max),
+                );
+            }
+
             _ => error!("{} failed: {:?}", message.content, error),
         })
         .group(&UTILS_GROUP)

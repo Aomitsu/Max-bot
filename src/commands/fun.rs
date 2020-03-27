@@ -38,6 +38,8 @@ fn harck(ctx: &mut Context, msg: &Message) -> CommandResult {
 #[command]
 #[description = "Générer un screen de Clyde qui parle ( NekoBotAPI )"]
 #[min_args(1)]
+#[usage("<message>")]
+#[example("Je suis clyde")]
 fn clyde(ctx: &mut Context, msg: &Message, arg: Args) -> CommandResult {
     let txt = arg.message();
 
@@ -61,6 +63,8 @@ fn clyde(ctx: &mut Context, msg: &Message, arg: Args) -> CommandResult {
 #[command]
 #[description = "Faire Tweeter Trump ( NekoBotAPI )"]
 #[min_args(1)]
+#[usage("<message>")]
+#[example("Je vous ai compris !")]
 fn trumptweet(ctx: &mut Context, msg: &Message, arg: Args) -> CommandResult {
     let txt = arg.message();
 
@@ -83,6 +87,8 @@ fn trumptweet(ctx: &mut Context, msg: &Message, arg: Args) -> CommandResult {
 #[command]
 #[description = "Générer un commentaire d'un célèbre site pour adulte ( NekoBotAPI )"]
 #[min_args(1)]
+#[usage("<message>")]
+#[example("Sah quel plaisir")]
 fn phcom(ctx: &mut Context, msg: &Message, arg: Args) -> CommandResult {
     let txt = arg.message();
 
@@ -98,6 +104,29 @@ fn phcom(ctx: &mut Context, msg: &Message, arg: Args) -> CommandResult {
     let _ = msg.channel_id.send_message(&ctx.http, |m| {
         m.embed(|e| {
             e.title("P.H. Comment")
+                .image(json["message"].as_str().unwrap());
+
+            e
+        })
+    });
+
+    Ok(())
+}
+
+#[command]
+#[description = "Générer un commentaire d'un célèbre site pour adulte ( NekoBotAPI )"]
+fn captcha(ctx: &mut Context, msg: &Message) -> CommandResult {
+    let json: serde_json::Value = reqwest::get(&format!(
+        "https://nekobot.xyz/api/imagegen?type={}&url={}&username={}&raw=0",
+        "captcha",
+        msg.author.avatar_url().unwrap(),
+        msg.author.name))
+        .expect("couldn't retrieve image")
+        .json()?;
+
+    let _ = msg.channel_id.send_message(&ctx.http, |m| {
+        m.embed(|e| {
+            e.title("Captcha")
                 .image(json["message"].as_str().unwrap());
 
             e
