@@ -8,7 +8,7 @@ use log::{error, info};
 use serenity::{
     client::bridge::gateway::ShardManager,
     framework::{
-        standard::macros::{group, help},
+        standard::macros::help,
         StandardFramework,
     },
     model::{event::ResumedEvent, gateway::Ready},
@@ -20,11 +20,7 @@ use serenity::model::channel::Message;
 use serenity::model::id::UserId;
 use serenity::model::prelude::{Activity, OnlineStatus};
 
-use commands::{
-    fun::*,
-    owner::*,
-    utils::*,
-};
+use commands::*;
 
 mod commands;
 
@@ -38,10 +34,11 @@ struct Handler;
 
 impl EventHandler for Handler {
     fn ready(&self, ctx: Context, ready: Ready) {
-        info!("Connected as {}", ready.user.name);
+        let guildsnum = ready.guilds.len();
+        info!("Connected as {}, for {} guilds.", ready.user.name, guildsnum);
 
-        let activity = Activity::streaming("Harcking in progress...", "https://www.twitch.tv/zerator");
-        let status = OnlineStatus::DoNotDisturb;
+        let activity = Activity::listening(format!("Je harck {} serveurs !", guildsnum).as_ref());
+        let status = OnlineStatus::Online;
 
         ctx.set_presence(Some(activity), status);
     }
@@ -51,20 +48,6 @@ impl EventHandler for Handler {
     }
 }
 
-#[group]
-#[commands(ping, say, links)]
-#[description = "Commandes utiles."]
-struct Utils;
-
-#[group]
-#[commands(vanish, harck, clyde, trumptweet, phcom, captcha)]
-#[description = "Commandes souvent amusantes."]
-struct Fun;
-
-#[group]
-#[commands(quit, admsay, setstatus)]
-#[description = "**Réservé au créateur du bot.**"]
-struct Owner;
 
 
 #[help]
@@ -143,7 +126,8 @@ fn main() {
         })
         .group(&UTILS_GROUP)
         .group(&FUN_GROUP)
-        .group(&OWNER_GROUP));
+        .group(&OWNER_GROUP)
+    );
 
 
     if let Err(why) = client.start() {
