@@ -6,6 +6,8 @@ use fun::harck::*;
 use fun::phcom::*;
 use fun::trumptweet::*;
 use fun::vanish::*;
+use guild::addemote::*;
+use guild::createchannel::*;
 use owner::admsay::*;
 use owner::quit::*;
 use owner::setstatus::*;
@@ -33,3 +35,10 @@ pub mod owner;
 #[commands(quit, admsay, setstatus)]
 #[description = "**Réservé au créateur du bot.**"]
 struct Owner;
+
+pub mod guild;
+
+#[group]
+#[commands(createchannel, addemote)]
+#[description = "**Réservé a la gestion de serveurs.**"]
+struct Guild;
