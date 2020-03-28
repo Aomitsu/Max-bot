@@ -4,25 +4,28 @@ use std::{
     sync::Arc,
 };
 
-use log::{error, info};
+use log::error;
 use serenity::{
     client::bridge::gateway::ShardManager,
     framework::{
         standard::macros::help,
         StandardFramework,
     },
-    model::{event::ResumedEvent, gateway::Ready},
     prelude::*,
 };
 use serenity::framework::standard::{Args, CommandGroup, CommandResult, help_commands, HelpOptions};
 use serenity::framework::standard::DispatchError::{NotEnoughArguments, Ratelimited, TooManyArguments};
 use serenity::model::channel::Message;
 use serenity::model::id::UserId;
-use serenity::model::prelude::{Activity, OnlineStatus};
 
 use commands::*;
+use listeners::Handler;
 
+/* Commands */
 mod commands;
+
+/* Listeners */
+mod listeners;
 
 struct ShardManagerContainer;
 
@@ -30,23 +33,6 @@ impl TypeMapKey for ShardManagerContainer {
     type Value = Arc<Mutex<ShardManager>>;
 }
 
-struct Handler;
-
-impl EventHandler for Handler {
-    fn ready(&self, ctx: Context, ready: Ready) {
-        let guildsnum = ready.guilds.len();
-        info!("Connected as {}, for {} guilds.", ready.user.name, guildsnum);
-
-        let activity = Activity::listening(format!("Je harck {} serveurs !", guildsnum).as_ref());
-        let status = OnlineStatus::Online;
-
-        ctx.set_presence(Some(activity), status);
-    }
-
-    fn resume(&self, _: Context, _: ResumedEvent) {
-        info!("Resumed");
-    }
-}
 
 
 
