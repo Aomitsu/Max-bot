@@ -8,6 +8,7 @@ use fun::trumptweet::*;
 use fun::vanish::*;
 use guild::addemote::*;
 use guild::createchannel::*;
+use moderation::ban::*;
 use owner::admsay::*;
 use owner::quit::*;
 use owner::setstatus::*;
@@ -42,3 +43,11 @@ pub mod guild;
 #[commands(createchannel, addemote)]
 #[description = "**Réservé a la gestion de serveurs.**"]
 struct Guild;
+
+
+pub mod moderation;
+
+#[group]
+#[commands(ban)]
+#[description = "**Réservé a la modération de serveurs.**"]
+struct Moderation;
