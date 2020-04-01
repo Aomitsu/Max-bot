@@ -14,11 +14,12 @@ use serenity::{
     prelude::*,
 };
 use serenity::framework::standard::{Args, CommandGroup, CommandResult, help_commands, HelpOptions};
-use serenity::framework::standard::DispatchError::{NotEnoughArguments, Ratelimited, TooManyArguments};
+use serenity::framework::standard::DispatchError::{LackingPermissions, NotEnoughArguments, Ratelimited, TooManyArguments};
 use serenity::model::channel::Message;
 use serenity::model::id::UserId;
 
 use commands::*;
+use db::*;
 use listeners::Handler;
 
 /* Commands */
@@ -26,6 +27,8 @@ mod commands;
 
 /* Listeners */
 mod listeners;
+
+mod db;
 
 struct ShardManagerContainer;
 
@@ -57,6 +60,8 @@ fn main() {
 
     let token = env::var("DISCORD_TOKEN")
         .expect("Expected a token in the environment");
+
+    //db_create();
 
     let mut client = Client::new(&token, Handler).expect("Err creating client");
 
@@ -105,6 +110,13 @@ fn main() {
                 let _ = message.channel_id.say(
                     &context,
                     format!("> **Erreur**: Vous avez donné *{}* arguments, la limite est de *{}*.\n> Un doute ? Utilisez la commande `help`", given, max),
+                );
+            },
+            LackingPermissions(permissions) => {
+                error!("{} failed: {:?}", message.content, error);
+                let _ = message.channel_id.say(
+                    &context,
+                    format!("> **Erreur**: Vous n'avez pas la / les permission(s) requise(s).\n> Un doute ? Utilisez la commande `help`"),
                 );
             }
 

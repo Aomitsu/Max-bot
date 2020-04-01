@@ -12,14 +12,16 @@ use moderation::ban::*;
 use owner::admsay::*;
 use owner::quit::*;
 use owner::setstatus::*;
+use utils::guildinfo::*;
 use utils::links::*;
 use utils::ping::*;
 use utils::say::*;
+use utils::vote::*;
 
 pub mod utils;
 
 #[group]
-#[commands(ping, say, links)]
+#[commands(ping, say, links, vote, guildinfo)]
 #[description = "Commandes utiles."]
 struct Utils;
 
