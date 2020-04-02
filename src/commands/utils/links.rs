@@ -2,6 +2,7 @@ use rand::{Rng, thread_rng};
 use serenity::framework::standard::{CommandResult, macros::command};
 use serenity::model::prelude::*;
 use serenity::prelude::*;
+use serenity::utils::Colour;
 
 #[command]
 #[description = "Seul noah connaît les secrets de cette commande"]

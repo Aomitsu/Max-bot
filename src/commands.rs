@@ -10,6 +10,7 @@ use guild::addemote::*;
 use guild::createchannel::*;
 use moderation::ban::*;
 use owner::admsay::*;
+use owner::apiai::*;
 use owner::quit::*;
 use owner::setstatus::*;
 use utils::guildinfo::*;
@@ -35,7 +36,7 @@ struct Fun;
 pub mod owner;
 
 #[group]
-#[commands(quit, admsay, setstatus)]
+#[commands(quit, admsay, setstatus, apiai)]
 #[description = "**Réservé au créateur du bot.**"]
 struct Owner;
 

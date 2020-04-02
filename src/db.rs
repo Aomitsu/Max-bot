@@ -1,6 +1,9 @@
-/*use mysql::*;
-use mysql::prelude::*;
 use std::env;
+
+use mysql::*;
+use mysql::prelude::*;
+
+pub mod user;
 
 pub fn db_conn() -> Result<PooledConn> {
     let url = env::var("MYSQL_URL")
@@ -13,5 +16,5 @@ pub fn db_conn() -> Result<PooledConn> {
 }
 
 pub fn db_create() {
-    let db = db_conn().unwrap();
-}*/
+    let _db = db_conn().unwrap();
+}

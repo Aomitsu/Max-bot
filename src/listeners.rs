@@ -3,6 +3,7 @@ use serenity::{model::prelude::*, prelude::*};
 pub mod ready;
 pub mod resume;
 pub mod guild_create;
+pub mod message;
 
 pub struct Handler;
 
@@ -15,5 +16,8 @@ impl EventHandler for Handler {
     }
     fn resume(&self, ctx: Context, resume: ResumedEvent) {
         resume::resume(ctx, resume)
+    }
+    fn message(&self, _ctx: Context, _new_message: Message) {
+        message::message(_ctx, _new_message)
     }
 }
