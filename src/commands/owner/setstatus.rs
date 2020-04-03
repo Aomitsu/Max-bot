@@ -10,7 +10,6 @@ fn setstatus(ctx: &mut Context, msg: &Message, arg: Args) -> CommandResult {
         let _ = msg.delete(&ctx);
         let _ = msg.channel_id.say(&ctx.http, "Je change mon status !");
 
-
         let activity = Activity::listening(arg.message());
         let status = OnlineStatus::Online;
 

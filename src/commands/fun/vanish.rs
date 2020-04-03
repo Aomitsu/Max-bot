@@ -1,7 +1,5 @@
 use serenity::framework::standard::{CommandResult, macros::command};
-use serenity::model::{
-    channel::Message
-};
+use serenity::model::channel::Message;
 use serenity::prelude::*;
 
 #[command]

@@ -15,19 +15,21 @@ fn guildinfo(ctx: &mut Context, msg: &Message) -> CommandResult {
             e.title("Informations sur ce serveur")
                 .description("Les informations données ici sont limité : Je n'ai pas encore compris comment avoir toute les infos d'une guild avec la lib que j'utilise :/")
                 .thumbnail(guild_info.read().icon_url().unwrap_or(no_icon.parse().unwrap()))
-                .field("-- **Base + Stats** --",
+                .field("-- **Base** --",
                        format!("**Nom :** {}\n\
                        **ID :** {}\n\
-                       **Membres :** {}\n\
-                       **Bans :** {}\n\
-                       **Rôles :** {}\n\
-                       [`Lien de l'icône`]({})",
+                       **Membres :** {}\n ",
                                guild_info.read().name.as_str(),
                                guild_info.read().id.0,
+                               guild_info.read().members.len()
+                       ), true)
+                .field("-- **Stats** --",
+                       format!("**Membres :** {}\n\
+                       **Bans :** {}\n\
+                       **Rôles :** {}\n ",
                                guild_info.read().members.len(),
                                guild_info.read().bans(&ctx).unwrap().len(),
-                               guild_info.read().roles.len(),
-                               guild_info.read().icon_url().unwrap_or(no_icon.parse().unwrap())),
+                               guild_info.read().roles.len(), ),
                        true);
 
 

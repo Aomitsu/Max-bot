@@ -3,7 +3,11 @@ use serenity::{model::prelude::*, prelude::*};
 
 pub fn guild_create(ctx: Context, guild: Guild, _is_new: bool) {
     if _is_new == true {
-        info!("New guild named {}, with {} members", guild.clone().name, guild.clone().member_count);
+        info!(
+            "New guild named {}, with {} members",
+            guild.clone().name,
+            guild.clone().member_count
+        );
         let _ = ctx.http.get_user(guild.owner_id.0).unwrap().direct_message(ctx.http, |m| {
             m.embed(|e| {
                 e.title("Un grand merci !")

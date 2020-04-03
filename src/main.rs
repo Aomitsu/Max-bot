@@ -15,6 +15,7 @@ use serenity::{
 };
 use serenity::framework::standard::{Args, CommandGroup, CommandResult, help_commands, HelpOptions};
 use serenity::framework::standard::DispatchError::{LackingPermissions, NotEnoughArguments, Ratelimited, TooManyArguments};
+use serenity::http::Http;
 use serenity::model::channel::Message;
 use serenity::model::id::UserId;
 
@@ -22,6 +23,7 @@ use commands::*;
 use db::*;
 use listeners::Handler;
 
+mod options;
 /* Commands */
 mod commands;
 
@@ -61,14 +63,15 @@ fn main() {
     let token = env::var("DISCORD_TOKEN")
         .expect("Expected a token in the environment");
 
-    //db_create();
+    //create_db();
 
-    let mut client = Client::new(&token, Handler).expect("Err creating client");
+    let mut client = Client::new(&token, Handler).expect("Error creating the client.");
 
     {
         let mut data = client.data.write();
         data.insert::<ShardManagerContainer>(Arc::clone(&client.shard_manager));
     }
+
 
     let owners = match client.cache_and_http.http.get_current_application_info() {
         Ok(info) => {
@@ -79,6 +82,7 @@ fn main() {
         }
         Err(why) => panic!("Couldn't get application info: {:?}", why),
     };
+
 
     client.with_framework(StandardFramework::new()
         .configure(|c| c

@@ -1,8 +1,6 @@
 use rand::{Rng, thread_rng};
 use serenity::framework::standard::{Args, CommandResult, macros::command};
-use serenity::model::{
-    prelude::*
-};
+use serenity::model::prelude::*;
 use serenity::model::prelude::ReactionType::Unicode;
 use serenity::prelude::*;
 use serenity::utils::Colour;
@@ -17,21 +15,24 @@ fn vote(ctx: &mut Context, msg: &Message, arg: Args) -> CommandResult {
 
     let said = arg.message();
 
-    let msg = msg.channel_id.send_message(&ctx.http, |m| {
-        m.embed(|e| {
-            e.title("Vote !")
-                .description(said)
-                .color(Colour::new(rng.gen_range(0, 16777215)))
-                .footer(|f| {
-                    f.text(format!(" | Lançé par {}", msg.author.name))
-                        .icon_url(msg.author.avatar_url().unwrap());
+    let msg = msg
+        .channel_id
+        .send_message(&ctx.http, |m| {
+            m.embed(|e| {
+                e.title("Vote !")
+                    .description(said)
+                    .color(Colour::new(rng.gen_range(0, 16777215)))
+                    .footer(|f| {
+                        f.text(format!(" | Lançé par {}", msg.author.name))
+                            .icon_url(msg.author.avatar_url().unwrap());
 
-                    f
-                });
+                        f
+                    });
 
-            e
+                e
+            })
         })
-    }).unwrap();
+        .unwrap();
 
     let _ = msg.react(&ctx, { Unicode("👍".parse()?) });
     let _ = msg.react(&ctx, { Unicode("👎".parse()?) });

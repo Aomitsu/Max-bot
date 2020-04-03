@@ -19,7 +19,8 @@ fn links(ctx: &mut Context, msg: &Message) -> CommandResult {
              **Github du Créateur** : [Ici](https://github.com/Aomitsu)\n\n\
              **Ajouter le bot** : -- Il arrivera un jour --\n\
              **Support** : [Ici](https://discord.gg/DRwfvJ4)\n\n\
-             Bot OpenSource créé par `Max¹#0064`, en [`Rust`](https://www.rust-lang.org), utilisant principalement le package [`Serenity`](https://crates.io/crates/serenity) version `0.8.0`");
+             Bot OpenSource créé par `Max¹#0064`, en [`Rust`](https://www.rust-lang.org), utilisant principalement le package [`Serenity`](https://crates.io/crates/serenity) version `0.8.0`\n\
+             Inspiré dans la manière de faire d'un autre bot, [`Eli Bot`](https://github.com/Elinvynia/bot) de `Elinvynia` ! [`License MIT`](https://github.com/Elinvynia/bot/blob/master/LICENSE.md)");
 
             e
         })

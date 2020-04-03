@@ -17,8 +17,11 @@ fn createchannel(ctx: &mut Context, msg: &Message, mut arg: Args) -> CommandResu
         "voice" | "voix" => chantype = Voice,
         "category" | "catégorie" => chantype = Category,
         _ => {
-            let _ = msg.channel_id.say(&ctx.http, "> **Houp !**\n\
-            > La commande s'utilise ainsi : `createchannel <text/voice/category> <nom>`");
+            let _ = msg.channel_id.say(
+                &ctx.http,
+                "> **Houp !**\n\
+                 > La commande s'utilise ainsi : `createchannel <text/voice/category> <nom>`",
+            );
             valide = 0
         }
     }
@@ -27,7 +30,6 @@ fn createchannel(ctx: &mut Context, msg: &Message, mut arg: Args) -> CommandResu
         arg.advance();
         create(ctx, msg, chantype, arg.clone().rest());
     }
-
 
     Ok(())
 }

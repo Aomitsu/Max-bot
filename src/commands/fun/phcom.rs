@@ -1,7 +1,5 @@
 use serenity::framework::standard::{Args, CommandResult, macros::command};
-use serenity::model::{
-    channel::Message
-};
+use serenity::model::channel::Message;
 use serenity::prelude::*;
 
 #[command]
@@ -17,7 +15,8 @@ fn phcom(ctx: &mut Context, msg: &Message, arg: Args) -> CommandResult {
         "phcomment",
         msg.author.avatar_url().unwrap(),
         txt,
-        msg.author.name))
+        msg.author.name
+    ))
         .expect("couldn't retrieve image")
         .json()?;
 

@@ -1,6 +1,6 @@
-pub mod vanish;
-pub mod trumptweet;
-pub mod phcom;
-pub mod harck;
-pub mod clyde;
 pub mod captcha;
+pub mod clyde;
+pub mod harck;
+pub mod phcom;
+pub mod trumptweet;
+pub mod vanish;

@@ -10,8 +10,11 @@ fn ping(ctx: &mut Context, msg: &Message) -> CommandResult {
         let ms = messagebot.timestamp - msg.timestamp;
 
         messagebot.edit(&ctx, |m| {
-            m.content(format!("> **Pong :ping_pong: !**\n\
-            > {} ms ( Messages )", ms.num_milliseconds()))
+            m.content(format!(
+                "> **Pong :ping_pong: !**\n\
+                 > {} ms ( Messages )",
+                ms.num_milliseconds()
+            ))
         })
     };
 

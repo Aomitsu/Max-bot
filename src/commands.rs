@@ -47,7 +47,6 @@ pub mod guild;
 #[description = "**Réservé a la gestion de serveurs.**"]
 struct Guild;
 
-
 pub mod moderation;
 
 #[group]

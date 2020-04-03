@@ -1,7 +1,5 @@
 use serenity::framework::standard::{CommandResult, macros::command};
-use serenity::model::{
-    channel::Message
-};
+use serenity::model::channel::Message;
 use serenity::prelude::*;
 
 #[command]
@@ -11,14 +9,14 @@ fn captcha(ctx: &mut Context, msg: &Message) -> CommandResult {
         "https://nekobot.xyz/api/imagegen?type={}&url={}&username={}&raw=0",
         "captcha",
         msg.author.avatar_url().unwrap(),
-        msg.author.name))
+        msg.author.name
+    ))
         .expect("couldn't retrieve image")
         .json()?;
 
     let _ = msg.channel_id.send_message(&ctx.http, |m| {
         m.embed(|e| {
-            e.title("Captcha")
-                .image(json["message"].as_str().unwrap());
+            e.title("Captcha").image(json["message"].as_str().unwrap());
 
             e
         })
