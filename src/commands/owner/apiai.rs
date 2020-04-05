@@ -13,13 +13,20 @@ use self::apiai::client::{ApiAIClient, ApiRequest};
 #[min_args(1)]
 #[owners_only]
 fn apiai(ctx: &mut Context, msg: &Message, arg: Args) -> CommandResult {
+    let mut settings = config::Config::default();
+    settings
+        .merge(config::File::with_name("config"))
+        .expect("Failed to open the config file.");
+
+    let token = settings
+        .get_str("dialogflow_token")
+        .expect("dialogflow_token not found in settings.");
+
     let _ = msg.delete(&ctx);
     let said = arg.message();
 
-    let my_token = env::var("DFLOW_TOKEN").expect("Expected a token in the environment");
-
     let client = ApiAIClient {
-        access_token: my_token,
+        access_token: token,
         ..Default::default()
     };
 

@@ -1,20 +1,17 @@
-use std::{
-    collections::HashSet,
-    env,
-    sync::Arc,
-};
+use std::{collections::HashSet, env, sync::Arc};
 
 use log::error;
 use serenity::{
     client::bridge::gateway::ShardManager,
-    framework::{
-        standard::macros::help,
-        StandardFramework,
-    },
+    framework::{standard::macros::help, StandardFramework},
     prelude::*,
 };
-use serenity::framework::standard::{Args, CommandGroup, CommandResult, help_commands, HelpOptions};
-use serenity::framework::standard::DispatchError::{LackingPermissions, NotEnoughArguments, Ratelimited, TooManyArguments};
+use serenity::framework::standard::{
+    Args, CommandGroup, CommandResult, help_commands, HelpOptions,
+};
+use serenity::framework::standard::DispatchError::{
+    LackingPermissions, NotEnoughArguments, Ratelimited, TooManyArguments,
+};
 use serenity::http::Http;
 use serenity::model::channel::Message;
 use serenity::model::id::UserId;
@@ -38,9 +35,6 @@ impl TypeMapKey for ShardManagerContainer {
     type Value = Arc<Mutex<ShardManager>>;
 }
 
-
-
-
 #[help]
 #[command_not_found_text("Commande introuvable !")]
 #[individual_command_tip("**Menu d'aide**\n\n\nCe menu d'aide vous permet de voir toute les commandes de notre bot ! Plus de détail : `help <commande/catégorie>`")]
@@ -60,8 +54,14 @@ fn my_help(
 fn main() {
     env_logger::init();
 
-    let token = env::var("DISCORD_TOKEN")
-        .expect("Expected a token in the environment");
+    let mut settings = config::Config::default();
+    settings
+        .merge(config::File::with_name("config"))
+        .expect("Failed to open the config file.");
+
+    let token = settings
+        .get_str("discord_token")
+        .expect("discord_token not found in settings.");
 
     //create_db();
 
@@ -72,7 +72,6 @@ fn main() {
         data.insert::<ShardManagerContainer>(Arc::clone(&client.shard_manager));
     }
 
-
     let owners = match client.cache_and_http.http.get_current_application_info() {
         Ok(info) => {
             let mut set = HashSet::new();
@@ -82,7 +81,6 @@ fn main() {
         }
         Err(why) => panic!("Couldn't get application info: {:?}", why),
     };
-
 
     client.with_framework(StandardFramework::new()
         .configure(|c| c
@@ -131,7 +129,6 @@ fn main() {
         .group(&GUILD_GROUP)
         .group(&OWNER_GROUP)
     );
-
 
     if let Err(why) = client.start() {
         error!("Client error: {:?}", why);
