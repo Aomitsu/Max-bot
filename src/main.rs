@@ -17,17 +17,16 @@ use serenity::model::channel::Message;
 use serenity::model::id::UserId;
 
 use commands::*;
-use db::*;
 use listeners::Handler;
 
-mod options;
 /* Commands */
 mod commands;
 
 /* Listeners */
 mod listeners;
 
-mod db;
+/* Functions */
+mod functions;
 
 struct ShardManagerContainer;
 

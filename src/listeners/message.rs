@@ -39,7 +39,12 @@ pub fn message(_ctx: Context, msg: Message) {
         };
 
         let response = client.query(req).unwrap();
-        let message_bot = str::replace(response.result.fulfillment.speech.as_ref(), "everyone", "_everyone").replace("here", "_here");
+        let message_bot = str::replace(
+            response.result.fulfillment.speech.as_ref(),
+            "everyone",
+            "_everyone",
+        )
+            .replace("here", "_here");
 
         if response.result.action.starts_with("interract.") {
             if response.result.action.ends_with("like") {
@@ -53,17 +58,13 @@ pub fn message(_ctx: Context, msg: Message) {
         } else {
             if response.result.action.starts_with("nsfw.") {
                 if msg.channel(&_ctx).unwrap().is_nsfw() {
-                    let _ = msg
-                        .channel_id
-                        .say(&_ctx, format!("> {}", message_bot));
+                    let _ = msg.channel_id.say(&_ctx, format!("> {}", message_bot));
                 } else {
                     let _ = msg.channel_id.say(&_ctx, format!("> Ouh ! Cette réponse contiens du `NSFW`, or, ce channel ne le permets pas !\n\
                     > Je te conseille de supprimer ton message avant qu'un modérateur arrive."));
                 }
             } else {
-                let _ = msg
-                    .channel_id
-                    .say(&_ctx, format!("> {}", message_bot));
+                let _ = msg.channel_id.say(&_ctx, format!("> {}", message_bot));
             }
         }
     }
