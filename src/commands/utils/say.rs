@@ -34,7 +34,5 @@ fn say(ctx: &mut Context, msg: &Message, arg: Args) -> CommandResult {
         });
     }
 
-    // TODO: Please HELP ME : How to check if the author has the permission " Mention everyone "
-
     Ok(())
 }
