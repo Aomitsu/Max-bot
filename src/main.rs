@@ -1,32 +1,32 @@
-use std::{
-    collections::HashSet,
-    env,
-    sync::Arc,
-};
+use std::{collections::HashSet, env, sync::Arc};
 
-use log::{error, info};
+use log::error;
 use serenity::{
     client::bridge::gateway::ShardManager,
-    framework::{
-        standard::macros::{group, help},
-        StandardFramework,
-    },
-    model::{event::ResumedEvent, gateway::Ready},
+    framework::{standard::macros::help, StandardFramework},
     prelude::*,
 };
-use serenity::framework::standard::{Args, CommandGroup, CommandResult, help_commands, HelpOptions};
-use serenity::framework::standard::DispatchError::{NotEnoughArguments, Ratelimited, TooManyArguments};
+use serenity::framework::standard::{
+    Args, CommandGroup, CommandResult, help_commands, HelpOptions,
+};
+use serenity::framework::standard::DispatchError::{
+    LackingPermissions, NotEnoughArguments, Ratelimited, TooManyArguments,
+};
+use serenity::http::Http;
 use serenity::model::channel::Message;
 use serenity::model::id::UserId;
-use serenity::model::prelude::{Activity, OnlineStatus};
 
-use commands::{
-    fun::*,
-    owner::*,
-    utils::*,
-};
+use commands::*;
+use listeners::Handler;
 
+/* Commands */
 mod commands;
+
+/* Listeners */
+mod listeners;
+
+/* Functions */
+mod functions;
 
 struct ShardManagerContainer;
 
@@ -34,62 +34,37 @@ impl TypeMapKey for ShardManagerContainer {
     type Value = Arc<Mutex<ShardManager>>;
 }
 
-struct Handler;
-
-impl EventHandler for Handler {
-    fn ready(&self, ctx: Context, ready: Ready) {
-        info!("Connected as {}", ready.user.name);
-
-        let activity = Activity::streaming("Harcking in progress...", "https://www.twitch.tv/zerator");
-        let status = OnlineStatus::DoNotDisturb;
-
-        ctx.set_presence(Some(activity), status);
-    }
-
-    fn resume(&self, _: Context, _: ResumedEvent) {
-        info!("Resumed");
-    }
-}
-
-#[group]
-#[commands(ping, say, links)]
-#[description = "Commandes utiles."]
-struct Utils;
-
-#[group]
-#[commands(vanish, harck, clyde, trumptweet, phcom, captcha)]
-#[description = "Commandes souvent amusantes."]
-struct Fun;
-
-#[group]
-#[commands(quit, admsay, setstatus)]
-#[description = "**Réservé au créateur du bot.**"]
-struct Owner;
-
-
 #[help]
 #[command_not_found_text("Commande introuvable !")]
 #[individual_command_tip("**Menu d'aide**\n\n\nCe menu d'aide vous permet de voir toute les commandes de notre bot ! Plus de détail : `help <commande/catégorie>`")]
 #[strikethrough_commands_tip_in_guild("Certaines commandes sont barrées, c'est que vous n'avez pas la permission, ou qu'elle se fait dans un serveur !")]
 #[strikethrough_commands_tip_in_dm("Certaines commandes sont barrées, c'est que vous n'avez pas la permission, ou qu'elle se fait en messages privés !")]
 fn my_help(
-    context: &mut Context,
+    ctx: &mut Context,
     msg: &Message,
     args: Args,
     help_options: &'static HelpOptions,
     groups: &[&'static CommandGroup],
     owners: HashSet<UserId>,
 ) -> CommandResult {
-    help_commands::with_embeds(context, msg, args, help_options, groups, owners)
+    help_commands::with_embeds(ctx, msg, args, help_options, groups, owners)
 }
 
 fn main() {
     env_logger::init();
 
-    let token = env::var("DISCORD_TOKEN")
-        .expect("Expected a token in the environment");
+    let mut settings = config::Config::default();
+    settings
+        .merge(config::File::with_name("config"))
+        .expect("Failed to open the config file.");
 
-    let mut client = Client::new(&token, Handler).expect("Err creating client");
+    let token = settings
+        .get_str("discord_token")
+        .expect("discord_token not found in settings.");
+
+    //create_db();
+
+    let mut client = Client::new(&token, Handler).expect("Error creating the client.");
 
     {
         let mut data = client.data.write();
@@ -137,14 +112,22 @@ fn main() {
                     &context,
                     format!("> **Erreur**: Vous avez donné *{}* arguments, la limite est de *{}*.\n> Un doute ? Utilisez la commande `help`", given, max),
                 );
+            },
+            LackingPermissions(permissions) => {
+                error!("{} failed: {:?}", message.content, error);
+                let _ = message.channel_id.say(
+                    &context,
+                    format!("> **Erreur**: Vous n'avez pas la / les permission(s) requise(s).\n> Un doute ? Utilisez la commande `help`"),
+                );
             }
 
             _ => error!("{} failed: {:?}", message.content, error),
         })
         .group(&UTILS_GROUP)
         .group(&FUN_GROUP)
-        .group(&OWNER_GROUP));
-
+        .group(&GUILD_GROUP)
+        .group(&OWNER_GROUP)
+    );
 
     if let Err(why) = client.start() {
         error!("Client error: {:?}", why);
