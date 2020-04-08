@@ -8,8 +8,10 @@ edition = "2018"
 
 [dependencies]
 
-tokio = { version = "0.2.16", features = ["full"] }
+tokio = { version = "0.2.16", features = ["macros", "rt-threaded", "blocking"] }
 serenity = { git = "https://github.com/Lakelezz/serenity/", branch = "await" }
 config = "0.10.1"
 log = "0.4.8"
 env_logger = "0.7.1"
+rand = "0.7.3"
+sqlx = { version = "0.3.3", default-features = false, features = ["runtime-tokio", "macros", "sqlite"] }

@@ -7,5 +7,11 @@
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://pvpzone.fr:3308/maxbots</jdbc-url>
     </data-source>
+    <data-source source="LOCAL" name="db.sqlite3" uuid="7f05e7fa-f9fc-4a2d-8cd3-64ea50b6cdaa">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:F:\Projets\Idea\max_bot\db.sqlite3</jdbc-url>
+    </data-source>
   </component>
 </project>

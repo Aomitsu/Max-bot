@@ -5,14 +5,19 @@ use serenity::http::Http;
 use serenity::prelude::*;
 
 use commands::*;
+use db::*;
 use events::Handler;
 
 mod events;
 mod commands;
 
+mod db;
+
 #[tokio::main]
 async fn main() {
     env_logger::init();
+
+    create_db().await;
 
     /* - Init config file - */
     let mut config = config::Config::default();
@@ -40,7 +45,8 @@ async fn main() {
     /* - Define and configure framework - */
     let framework = StandardFramework::new()
         .configure(|c| c.owners(owners).on_mention(Some(botid)).prefix("&"))
-        .group(&OWNER_GROUP);
+        .group(&OWNER_GROUP)
+        .group(&UTILS_GROUP);
 
     /* - Init and start Client - */
     let mut client = Client::new_with_framework(token, Handler, framework)
@@ -49,5 +55,5 @@ async fn main() {
     client
         .start_autosharded()
         .await
-        .expect("Failed to start the client 😱")
+        .expect("Failed to start the client 😱");
 }
