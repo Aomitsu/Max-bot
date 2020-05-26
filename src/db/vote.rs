@@ -1,53 +1,48 @@
-use std::error::Error;
-use std::io::Read;
+use sql_builder::{SqlBuilder, quote};
+
+use super::db_connect;
+use mysql_async::prelude::*;
+
 
 use log::info;
-use sqlx::prelude::*;
-use sqlx::sqlite::*;
-
-use super::get_db;
 
 pub struct Vote {
-    pub channel_id: u64,
     pub message_id: u64,
     pub user_id: u64,
 }
 
-pub async fn add_vote(vote: Box<Vote>) {
-    let mut conn = get_db().await;
 
-    let _ = sqlx::query("INSERT INTO vote VALUES (?, ?, ?)")
-        .bind(vote.channel_id.to_string())
-        .bind(vote.message_id.to_string())
-        .bind(vote.user_id.to_string())
-        .execute(&mut conn).await;
+pub(crate) async fn add_vote(vote: Vote){
+    let db = db_connect().await.unwrap();
 
-    info!("Vote créé");
-    let test = vote_user_id(vote.message_id).await.unwrap();
-    info!("Test : {}", test)
+
+    let sql = async{ SqlBuilder::insert_into("vote")
+        .field("message_id")
+        .field("user_id")
+        .values(&[&quote(vote.message_id.to_string()), &quote(&vote.user_id.to_string())])
+        .sql().unwrap() };
+
+    let req = sql.await;
+
+    info!("{}", req.to_string());
+
+
+    let _ = db.drop_exec(req, ()).await;
+
+
 }
-/*pub async fn is_vote(msg_id: u64) -> Result<bool, sqlx::Error> {
 
-}
-pub async fn rem_vote(msg_id: u64){
-    let mut conn = get_db().await;
+pub(crate) async fn rem_vote(vote: u64){
+    let db = db_connect().await.unwrap();
+    let sql = async{ SqlBuilder::delete_from("vote")
+        .and_where_eq("message_id", &quote(vote.to_string()))
+        .sql().unwrap()
+    };
+    let req = sql.await;
 
-    info!("Vote supprimé");
+    info!("{}", req.to_string());
 
-    let _ = sqlx::query("DELETE FROM vote WHERE message_id = ?")
-        .bind(msg_id.to_string())
-        .execute(&mut conn).await;
-}*/
-pub async fn vote_user_id(msg_id: u64) -> Result<String, sqlx::Error> {
-    let mut conn = get_db().await;
 
-    let request: String = sqlx::query("SELECT user_id FROM vote WHERE message_id = ?")
-        .bind(msg_id.to_string())
-        .fetch(&mut conn)
-        .next()
-        .await?
-        .unwrap()
-        .try_get(0)?;
+    let _ = db.drop_exec(req, ()).await;
 
-    Ok(request)
 }

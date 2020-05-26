@@ -40,13 +40,12 @@ async fn vote(ctx: &mut Context, msg: &Message, arg: Args) -> CommandResult {
     let _ = new_msg.react(&ctx, { Unicode("👎".parse()?) }).await;
 
     let vote_db = Vote {
-        channel_id: new_msg.channel_id.0,
-        message_id: msg.id.0,
+        message_id: new_msg.id.0,
         user_id: msg.author.id.0,
     };
 
 
-    add_vote(Box::from(vote_db)).await;
+    add_vote(vote_db).await;
 
     //notify_vote_user(msg.id.0).await;
 

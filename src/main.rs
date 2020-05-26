@@ -1,15 +1,16 @@
 use std::collections::HashSet;
 
-use serenity::framework::StandardFramework;
+use serenity::framework::{StandardFramework};
 use serenity::http::Http;
 use serenity::prelude::*;
 
 use commands::*;
 use db::*;
 use events::Handler;
-
 mod events;
 mod commands;
+mod error;
+mod functions;
 
 mod db;
 
@@ -17,7 +18,7 @@ mod db;
 async fn main() {
     env_logger::init();
 
-    create_db().await;
+    let _ = db_connect().await;
 
     /* - Init config file - */
     let mut config = config::Config::default();
@@ -46,6 +47,7 @@ async fn main() {
     let framework = StandardFramework::new()
         .configure(|c| c.owners(owners).on_mention(Some(botid)).prefix("&"))
         .group(&OWNER_GROUP)
+        .group(&MODERATION_GROUP)
         .group(&UTILS_GROUP);
 
     /* - Init and start Client - */
