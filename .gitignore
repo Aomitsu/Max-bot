@@ -1,6 +1,7 @@
 /target
 **/*.rs.bk
 .idea/dataSources.xml
-*.sqlite*
+/tmp/*
 config.toml
 /config.toml
+guilds

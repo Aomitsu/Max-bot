@@ -5,12 +5,11 @@ use serenity::http::Http;
 use serenity::prelude::*;
 
 use commands::*;
-use db::*;
+
 use events::Handler;
 mod events;
 mod commands;
 mod error;
-
 mod db;
 
 #[tokio::main]
@@ -42,8 +41,13 @@ async fn main() {
 
     /* - Define and configure framework - */
     let framework = StandardFramework::new()
-        .configure(|c| c.owners(owners).on_mention(Some(botid)).prefix("&"))
-        .group(&OWNER_GROUP);
+        .configure(|c|
+            c.owners(owners)
+                .on_mention(Some(botid))
+                .prefix("&")
+        )
+        .group(&OWNER_GROUP)
+        .group(&ADMIN_GROUP);
 
 
     let client = Client::new(token)
