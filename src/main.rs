@@ -10,15 +10,12 @@ use events::Handler;
 mod events;
 mod commands;
 mod error;
-mod functions;
 
 mod db;
 
 #[tokio::main]
 async fn main() {
     env_logger::init();
-
-    let _ = db_connect().await;
 
     /* - Init config file - */
     let mut config = config::Config::default();
@@ -46,16 +43,16 @@ async fn main() {
     /* - Define and configure framework - */
     let framework = StandardFramework::new()
         .configure(|c| c.owners(owners).on_mention(Some(botid)).prefix("&"))
-        .group(&OWNER_GROUP)
-        .group(&MODERATION_GROUP)
-        .group(&UTILS_GROUP);
+        .group(&OWNER_GROUP);
 
-    /* - Init and start Client - */
-    let mut client = Client::new_with_framework(token, Handler, framework)
+
+    let client = Client::new(token)
+        .event_handler(Handler)
+        .framework(framework)
         .await
-        .expect("Client not init 😱");
-    client
+        .expect("Client not init 😱")
         .start_autosharded()
         .await
         .expect("Failed to start the client 😱");
+    client
 }

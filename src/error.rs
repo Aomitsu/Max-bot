@@ -6,7 +6,7 @@ use std::{
 
 #[derive(Debug)]
 pub enum BotError {
-    DbError(mysql_async::error::Error),
+    //DbError(),
     ParseError(ParseIntError),
     CustomError(String),
 }
@@ -19,11 +19,11 @@ impl Display for BotError {
 
 impl Error for BotError {}
 
-impl From<mysql_async::error::Error> for BotError {
+/*impl From<mysql_async::error::Error> for BotError {
     fn from(err: mysql_async::error::Error) -> BotError {
         BotError::DbError(err)
     }
-}
+}*/
 
 impl From<String> for BotError {
     fn from(err: String) -> BotError {

@@ -8,11 +8,15 @@ edition = "2018"
 
 [dependencies]
 
-sql-builder = "0.12.0"
-tokio = { version = "0.2.16", features = ["macros", "rt-threaded", "blocking"] }
-serenity = { git = "https://github.com/Lakelezz/serenity/", branch = "await", features=["collector", "http"] }
+tokio = { version = "0.2.16", features = ["macros", "rt-threaded", "blocking", "stream"] }
+serenity = { git = "https://github.com/Lakelezz/serenity/", branch = "await-oom", features=["collector", "http", "framework"] }
 config = "0.10.1"
 log = "0.4.8"
 env_logger = "0.7.1"
-rand = "0.7.3"
-mysql_async = "0.23.0"
+# rustbreak = "1.4.0"
+serde = "1.0.111"
+
+[dependencies.rustbreak]
+version = "1.4.0"
+default-features = false
+features = ["yaml"]

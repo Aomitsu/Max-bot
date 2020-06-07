@@ -7,12 +7,12 @@ use serenity::{
 #[command]
 #[owners_only]
 #[min_args(2)]
-async fn admsay(ctx: &mut Context, msg: &Message, mut arg: Args) -> CommandResult {
-    let _ = msg.delete(&ctx).await;
+async fn admsay(ctx: &Context, msg: &Message, mut arg: Args) -> CommandResult {
+    let _ = msg.delete(ctx).await;
 
     let id = arg.current().unwrap();
     let channel = ctx.http.get_channel(id.parse()?).await;
-    let channel_id = channel.unwrap().id().await;
+    let channel_id = channel.unwrap().id();
 
     arg.advance();
 
